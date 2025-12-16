@@ -1,0 +1,109 @@
+<%- include('../partials/header') %>
+
+<div
+	style="
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
+	"
+>
+	<h1 style="font-size: 2rem; font-weight: 700">Analítica</h1>
+	<a href="/admin" class="btn" style="background: var(--bg-accent)"
+		><i class="fa-solid fa-arrow-left"></i> Volver</a
+	>
+</div>
+
+<div
+	style="
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 2rem;
+	"
+>
+	<!-- Top Products Today -->
+	<div class="glass-card">
+		<h3 style="margin-bottom: 1.5rem; color: var(--warning)">
+			<i class="fa-solid fa-star"></i> Top Productos (Hoy)
+		</h3>
+		<table style="width: 100%; border-collapse: collapse">
+			<thead>
+				<tr
+					style="text-align: left; border-bottom: 1px solid var(--border-color)"
+				>
+					<th style="padding: 0.5rem">Producto</th>
+					<th style="padding: 0.5rem; text-align: right">Vendidos</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% if (topToday.length > 0) { %> <% topToday.forEach(p => { %>
+				<tr style="border-bottom: 1px solid var(--glass-border)">
+					<td style="padding: 0.75rem 0.5rem"><%= p.name %></td>
+					<td
+						style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600"
+					>
+						<%= p.sold %>
+					</td>
+				</tr>
+				<% }) %> <% } else { %>
+				<tr>
+					<td
+						colspan="2"
+						style="
+							padding: 1rem;
+							text-align: center;
+							color: var(--text-secondary);
+						"
+					>
+						Sin datos hoy
+					</td>
+				</tr>
+				<% } %>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Top Products All Time (Limit 10) -->
+	<div class="glass-card">
+		<h3 style="margin-bottom: 1.5rem; color: var(--accent-color)">
+			<i class="fa-solid fa-trophy"></i> Más Vendidos (Histórico)
+		</h3>
+		<table style="width: 100%; border-collapse: collapse">
+			<thead>
+				<tr
+					style="text-align: left; border-bottom: 1px solid var(--border-color)"
+				>
+					<th style="padding: 0.5rem">Producto</th>
+					<th style="padding: 0.5rem; text-align: right">Vendidos</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% if (topAllTime.length > 0) { %> <% topAllTime.forEach(p => { %>
+				<tr style="border-bottom: 1px solid var(--glass-border)">
+					<td style="padding: 0.75rem 0.5rem"><%= p.name %></td>
+					<td
+						style="padding: 0.75rem 0.5rem; text-align: right; font-weight: 600"
+					>
+						<%= p.sold %>
+					</td>
+				</tr>
+				<% }) %> <% } else { %>
+				<tr>
+					<td
+						colspan="2"
+						style="
+							padding: 1rem;
+							text-align: center;
+							color: var(--text-secondary);
+						"
+					>
+						Sin datos aún
+					</td>
+				</tr>
+				<% } %>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<%- include('../partials/footer') %>

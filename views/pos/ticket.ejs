@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Ticket #<%= sale.id.split('-')[0] %></title>
+		<style>
+			body {
+				font-family: "Courier New", monospace;
+				font-size: 12px;
+				padding: 10px;
+				max-width: 300px;
+				margin: 0 auto;
+				background: #fff;
+				color: #000;
+			}
+			.header {
+				text-align: center;
+				margin-bottom: 10px;
+				border-bottom: 1px dashed #000;
+				padding-bottom: 10px;
+			}
+			.item {
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 5px;
+			}
+			.total-section {
+				border-top: 1px dashed #000;
+				margin-top: 10px;
+				padding-top: 5px;
+			}
+			.row {
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 2px;
+			}
+			.bold {
+				font-weight: bold;
+			}
+			.footer {
+				text-align: center;
+				margin-top: 20px;
+				font-size: 10px;
+			}
+
+			@media print {
+				body {
+					margin: 0;
+					padding: 0;
+					width: 100%;
+					max-width: none;
+				}
+				.no-print {
+					display: none;
+				}
+				@page {
+					margin: 0;
+					size: auto;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<h3 style="margin: 0 0 5px 0">ALMACÉN GENERAL</h3>
+			<div>Fecha: <%= new Date(sale.created_at).toLocaleString() %></div>
+			<div>Ticket: <%= sale.id.split('-')[0] %></div>
+			<div>Cajero: <%= sale.users.username %></div>
+		</div>
+
+		<div class="items">
+			<% sale.sale_items.forEach(item => { %>
+			<div class="item">
+				<span><%= item.quantity %> x <%= item.products.name %></span>
+				<span>$<%= (item.price_at_sale * item.quantity).toFixed(2) %></span>
+			</div>
+			<% }) %>
+		</div>
+
+		<div class="total-section">
+			<div class="row">
+				<span>Subtotal:</span>
+				<span>$<%= (sale.total_base || sale.total).toFixed(2) %></span>
+			</div>
+			<% if (sale.total_surcharge > 0) { %>
+			<div class="row">
+				<span>Recargos:</span>
+				<span>$<%= sale.total_surcharge.toFixed(2) %></span>
+			</div>
+			<% } %>
+			<div class="row bold" style="font-size: 14px; margin-top: 5px">
+				<span>TOTAL:</span>
+				<span
+					>$<%= (parseFloat(sale.total_base || sale.total) +
+					parseFloat(sale.total_surcharge || 0)).toFixed(2) %></span
+				>
+			</div>
+		</div>
+
+		<div
+			style="margin-top: 10px; border-top: 1px dashed #000; padding-top: 5px"
+		>
+			<div style="font-weight: bold; margin-bottom: 5px">Métodos de Pago:</div>
+			<% sale.sale_payments.forEach(p => { %>
+			<div class="row">
+				<span
+					><%= p.payment_methods.name %> <%= p.payment_methods.surcharge_percent
+					> 0 ? '(+' + p.payment_methods.surcharge_percent + '%)' : '' %>:</span
+				>
+				<span
+					>$<%= (parseFloat(p.amount) +
+					parseFloat(p.surcharge_amount)).toFixed(2) %></span
+				>
+			</div>
+			<% }) %>
+		</div>
+
+		<div class="footer">
+			<p>¡Gracias por su compra!</p>
+			<p>**** Copia Cliente ****</p>
+		</div>
+
+		<button
+			class="no-print"
+			onclick="window.print()"
+			style="
+				margin-top: 20px;
+				width: 100%;
+				padding: 10px;
+				font-size: 16px;
+				cursor: pointer;
+			"
+		>
+			IMPRIMIR
+		</button>
+	</body>
+</html>

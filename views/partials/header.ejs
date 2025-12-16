@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>
+			Gestión Almacén | <%= typeof title !== 'undefined' ? title : 'Sistema' %>
+		</title>
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<!-- FontAwesome -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		/>
+		<!-- Custom CSS -->
+		<link rel="stylesheet" href="/css/style.css" />
+	</head>
+	<body>
+		<% if (typeof user !== 'undefined' && user) { %>
+		<nav
+			class="main-nav"
+			style="
+				background: var(--bg-secondary);
+				padding: 1rem;
+				border-bottom: 1px solid var(--border-color);
+			"
+		>
+			<div
+				class="container"
+				style="
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+				"
+			>
+				<a
+					href="/"
+					class="brand"
+					style="
+						font-weight: 700;
+						font-size: 1.25rem;
+						color: var(--text-primary);
+					"
+				>
+					<i
+						class="fa-solid fa-boxes-stacked"
+						style="color: var(--accent-color); margin-right: 0.5rem"
+					></i>
+					Gestión Almacén
+				</a>
+				<div
+					class="user-menu"
+					style="display: flex; gap: 1rem; align-items: center"
+				>
+					<span style="color: var(--text-secondary)"
+						><%= user.username %> (<%= user.role %>)</span
+					>
+					<a
+						href="/auth/logout"
+						class="btn"
+						style="
+							background: var(--bg-accent);
+							padding: 0.5rem 1rem;
+							font-size: 0.875rem;
+						"
+					>
+						<i class="fa-solid fa-sign-out-alt"></i> Salir
+					</a>
+				</div>
+			</div>
+		</nav>
+		<% } %>
+
+		<main
+			class="container"
+			style="padding-top: 2rem; padding-bottom: 2rem"
+		></main>
+	</body>
+</html>

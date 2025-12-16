@@ -1,0 +1,129 @@
+<%- include('../partials/header') %>
+
+<div
+	style="
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
+	"
+>
+	<h1 style="font-size: 2rem; font-weight: 700">Métodos de Pago</h1>
+	<a href="/admin" class="btn" style="background: var(--bg-accent)"
+		><i class="fa-solid fa-arrow-left"></i> Volver</a
+	>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem">
+	<!-- Add Method Form -->
+	<div class="glass-card">
+		<h3 style="margin-bottom: 1.5rem">Nuevo Método</h3>
+		<form action="/admin/payments" method="POST">
+			<div class="form-group">
+				<label class="form-label">Nombre</label>
+				<input
+					type="text"
+					name="name"
+					class="form-control"
+					placeholder="Ej. Billetera Santa Fe"
+					required
+				/>
+			</div>
+			<div class="form-group">
+				<label class="form-label">Recargo (%)</label>
+				<input
+					type="number"
+					step="0.01"
+					name="surcharge_percent"
+					class="form-control"
+					value="0"
+					min="0"
+					required
+				/>
+				<small style="color: var(--text-secondary)">0 para sin recargo</small>
+			</div>
+			<button type="submit" class="btn btn-primary" style="width: 100%">
+				Agregar
+			</button>
+		</form>
+	</div>
+
+	<!-- Methods List -->
+	<div class="glass-card">
+		<h3 style="margin-bottom: 1.5rem">Configuración Actual</h3>
+		<table style="width: 100%; border-collapse: collapse">
+			<thead>
+				<tr
+					style="text-align: left; border-bottom: 1px solid var(--border-color)"
+				>
+					<th style="padding: 1rem">Nombre</th>
+					<th style="padding: 1rem">Recargo</th>
+					<th style="padding: 1rem">Estado</th>
+					<th style="padding: 1rem">Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% if (methods && methods.length > 0) { %> <% methods.forEach(m => { %>
+				<tr style="border-bottom: 1px solid var(--glass-border)">
+					<td style="padding: 1rem; font-weight: 500"><%= m.name %></td>
+					<td style="padding: 1rem">
+						<% if (m.surcharge_percent > 0) { %>
+						<span style="color: var(--warning)"
+							>+<%= m.surcharge_percent %>%</span
+						>
+						<% } else { %>
+						<span style="color: var(--text-secondary)">0%</span>
+						<% } %>
+					</td>
+					<td style="padding: 1rem">
+						<% if (m.active) { %>
+						<span style="color: var(--success); font-size: 0.875rem"
+							>● Activo</span
+						>
+						<% } else { %>
+						<span style="color: var(--danger); font-size: 0.875rem"
+							>● Inactivo</span
+						>
+						<% } %>
+					</td>
+					<td style="padding: 1rem">
+						<form
+							action="/admin/payments/toggle/<%= m.id %>"
+							method="POST"
+							style="display: inline"
+						>
+							<button
+								type="submit"
+								class="btn"
+								style="
+									padding: 0.5rem;
+									background: var(--bg-primary);
+									border: 1px solid var(--border-color);
+									font-size: 0.875rem;
+								"
+							>
+								<%= m.active ? 'Desactivar' : 'Activar' %>
+							</button>
+						</form>
+					</td>
+				</tr>
+				<% }) %> <% } else { %>
+				<tr>
+					<td
+						colspan="4"
+						style="
+							padding: 1rem;
+							text-align: center;
+							color: var(--text-secondary);
+						"
+					>
+						No hay métodos configurados.
+					</td>
+				</tr>
+				<% } %>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<%- include('../partials/footer') %>

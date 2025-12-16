@@ -1,0 +1,472 @@
+<%- include('../partials/header') %>
+
+<style>
+	.modal-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.7);
+		display: none;
+		align-items: center;
+		justify-content: center;
+		z-index: 1000;
+		backdrop-filter: blur(5px);
+	}
+	.modal-content {
+		background: var(--bg-secondary);
+		padding: 2rem;
+		border-radius: 1rem;
+		width: 100%;
+		max-width: 600px;
+		border: 1px solid var(--border-color);
+	}
+	.payment-row {
+		background: rgba(255, 255, 255, 0.03);
+		padding: 1rem;
+		border-radius: 0.5rem;
+		margin-bottom: 1rem;
+		display: grid;
+		grid-template-columns: 2fr 1fr auto;
+		gap: 1rem;
+		align-items: center;
+	}
+</style>
+
+<div
+	style="
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		gap: 2rem;
+		height: calc(100vh - 140px);
+	"
+>
+	<!-- Product Catalog -->
+	<div style="overflow-y: auto; padding-right: 1rem">
+		<div style="margin-bottom: 1rem">
+			<input
+				type="text"
+				id="search"
+				placeholder="Buscar producto (F2)..."
+				class="form-control"
+				onkeyup="filterProducts()"
+			/>
+		</div>
+
+		<div
+			class="product-grid"
+			style="
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+				gap: 1rem;
+			"
+		>
+			<% products.forEach(p => { %>
+			<div
+				class="glass-card product-card"
+				style="padding: 1rem; cursor: pointer; transition: all 0.2s"
+				onclick="addToCart('<%= p.id %>', '<%= p.name %>', <%= p.price %>, <%= p.stock %>)"
+				data-name="<%= p.name.toLowerCase() %>"
+				data-sku="<%= p.sku.toLowerCase() %>"
+			>
+				<div
+					style="
+						height: 80px;
+						background: rgba(255, 255, 255, 0.05);
+						border-radius: 0.5rem;
+						margin-bottom: 0.5rem;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+					"
+				>
+					<i
+						class="fa-solid fa-box-open"
+						style="font-size: 2rem; color: var(--text-secondary)"
+					></i>
+				</div>
+				<h4 style="font-size: 0.9rem; margin-bottom: 0.25rem"><%= p.name %></h4>
+				<p style="color: var(--success); font-weight: 600">$<%= p.price %></p>
+				<small style="color: var(--text-secondary)"
+					>Stock: <%= p.stock %></small
+				>
+			</div>
+			<% }) %>
+		</div>
+	</div>
+
+	<!-- Cart -->
+	<div
+		class="glass-card"
+		style="display: flex; flex-direction: column; height: 100%"
+	>
+		<div
+			style="
+				margin-bottom: 1rem;
+				padding-bottom: 1rem;
+				border-bottom: 1px solid var(--border-color);
+			"
+		>
+			<h3 style="font-weight: 700">
+				<i class="fa-solid fa-cart-shopping"></i> Carrito
+			</h3>
+		</div>
+
+		<div id="cart-items" style="flex: 1; overflow-y: auto; margin-bottom: 1rem">
+			<!-- Cart Items injected here -->
+			<p
+				style="
+					text-align: center;
+					color: var(--text-secondary);
+					margin-top: 2rem;
+				"
+			>
+				Carrito vacío
+			</p>
+		</div>
+
+		<div style="border-top: 1px solid var(--border-color); padding-top: 1rem">
+			<div
+				style="
+					display: flex;
+					justify-content: space-between;
+					margin-bottom: 1rem;
+					font-size: 1.25rem;
+					font-weight: 700;
+				"
+			>
+				<span>Total:</span>
+				<span id="cart-total">$0.00</span>
+			</div>
+			<button
+				class="btn btn-primary"
+				style="width: 100%"
+				onclick="openPaymentModal()"
+			>
+				<i class="fa-solid fa-check"></i> Proceder al Pago (F4)
+			</button>
+		</div>
+	</div>
+</div>
+
+<!-- Payment Modal -->
+<div id="payment-modal" class="modal-overlay">
+	<div class="modal-content">
+		<h2 style="margin-bottom: 1.5rem">Registrar Pago</h2>
+
+		<div
+			style="
+				background: rgba(0, 0, 0, 0.2);
+				padding: 1rem;
+				border-radius: 0.5rem;
+				margin-bottom: 1.5rem;
+				text-align: right;
+			"
+		>
+			<div style="font-size: 0.9rem; color: var(--text-secondary)">
+				Total a Pagar
+			</div>
+			<div
+				id="modal-total"
+				style="font-size: 2rem; font-weight: 700; color: var(--text-primary)"
+			>
+				$0.00
+			</div>
+		</div>
+
+		<div id="payment-methods-list">
+			<!-- Dynamic Payment Rows -->
+		</div>
+
+		<button
+			onclick="addPaymentRow()"
+			class="btn"
+			style="
+				background: var(--bg-accent);
+				margin-bottom: 1rem;
+				font-size: 0.875rem;
+			"
+		>
+			<i class="fa-solid fa-plus"></i> Agregar Otro Método
+		</button>
+
+		<div
+			style="
+				border-top: 1px solid var(--border-color);
+				padding-top: 1rem;
+				margin-top: 1rem;
+			"
+		>
+			<div
+				style="
+					display: flex;
+					justify-content: space-between;
+					margin-bottom: 0.5rem;
+				"
+			>
+				<span style="color: var(--text-secondary)">Pagado:</span>
+				<span id="paid-amount" style="font-weight: 600">$0.00</span>
+			</div>
+			<div
+				style="
+					display: flex;
+					justify-content: space-between;
+					margin-bottom: 1rem;
+				"
+			>
+				<span style="color: var(--text-secondary)">Restante:</span>
+				<span
+					id="remaining-amount"
+					style="font-weight: 600; color: var(--danger)"
+					>$0.00</span
+				>
+			</div>
+
+			<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem">
+				<button
+					onclick="closePaymentModal()"
+					class="btn"
+					style="background: var(--danger)"
+				>
+					Cancelar
+				</button>
+				<button onclick="processSale()" class="btn btn-primary">
+					Finalizar Venta
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	let cart = [];
+	const paymentMethods = <%- JSON.stringify(paymentMethods) %>;
+	let activePayments = [];
+
+	// --- Keyboard Shortcuts ---
+	document.addEventListener('keydown', (e) => {
+	    if (e.key === 'F2') {
+	        e.preventDefault();
+	        document.getElementById('search').focus();
+	    }
+	    if (e.key === 'F4') {
+	        e.preventDefault();
+	        openPaymentModal();
+	    }
+	});
+
+	// --- Cart Logic ---
+	function addToCart(id, name, price, maxStock) {
+	    const existing = cart.find(item => item.id === id);
+	    if (existing) {
+	        if (existing.quantity < maxStock) {
+	            existing.quantity++;
+	        } else {
+	            alert('Stock máximo alcanzado');
+	        }
+	    } else {
+	        cart.push({ id, name, price, quantity: 1, maxStock });
+	    }
+	    renderCart();
+	}
+
+	function removeFromCart(id) {
+	    cart = cart.filter(item => item.id !== id);
+	    renderCart();
+	}
+
+	function updateQuantity(id, change) {
+	    const item = cart.find(i => i.id === id);
+	    if (item) {
+	        const newQty = item.quantity + change;
+	        if (newQty > 0 && newQty <= item.maxStock) {
+	            item.quantity = newQty;
+	        } else if (newQty <= 0) {
+	            removeFromCart(id);
+	            return;
+	        }
+	    }
+	    renderCart();
+	}
+
+	function renderCart() {
+	    const container = document.getElementById('cart-items');
+	    const totalEl = document.getElementById('cart-total');
+
+	    if (cart.length === 0) {
+	        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); margin-top: 2rem;">Carrito vacío</p>';
+	        totalEl.textContent = '$0.00';
+	        return;
+	    }
+
+	    let html = '';
+	    let total = 0;
+
+	    cart.forEach(item => {
+	        total += item.price * item.quantity;
+	        html += `
+	            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; background: rgba(255,255,255,0.03); padding: 0.5rem; border-radius: 0.5rem;">
+	                <div style="flex: 1;">
+	                    <div style="font-weight: 500; font-size: 0.9rem;">${item.name}</div>
+	                    <div style="font-size: 0.8rem; color: var(--text-secondary);">$${item.price} x ${item.quantity}</div>
+	                </div>
+	                <div style="display: flex; align-items: center; gap: 0.5rem;">
+	                    <button onclick="updateQuantity('${item.id}', -1)" style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">-</button>
+	                    <span>${item.quantity}</span>
+	                    <button onclick="updateQuantity('${item.id}', 1)" style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">+</button>
+	                </div>
+	            </div>
+	        `;
+	    });
+
+	    container.innerHTML = html;
+	    totalEl.textContent = '$' + total.toFixed(2);
+	}
+
+	function filterProducts() {
+	    const query = document.getElementById('search').value.toLowerCase();
+	    const cards = document.querySelectorAll('.product-card');
+
+	    cards.forEach(card => {
+	        const name = card.dataset.name;
+	        const sku = card.dataset.sku;
+	        if (name.includes(query) || sku.includes(query)) {
+	            card.style.display = 'block';
+	        } else {
+	            card.style.display = 'none';
+	        }
+	    });
+	}
+
+	// --- Payment Logic ---
+	function openPaymentModal() {
+	    if (cart.length === 0) return alert('Carrito vacío');
+
+	    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+	    document.getElementById('modal-total').textContent = '$' + total.toFixed(2);
+	    document.getElementById('payment-modal').style.display = 'flex';
+
+	    // Reset payments
+	    document.getElementById('payment-methods-list').innerHTML = '';
+	    activePayments = [];
+	    addPaymentRow(total); // Add initial row with full amount
+	}
+
+	function closePaymentModal() {
+	    document.getElementById('payment-modal').style.display = 'none';
+	}
+
+	function addPaymentRow(initialAmount = 0) {
+	    if (activePayments.length >= 3) return alert('Máximo 3 métodos de pago');
+
+	    const remaining = calculateRemaining();
+	    // If initialAmount is passed, use it, otherwise use remaining. If remaining is 0, default to 0.
+	    const defaultAmount = initialAmount > 0 ? initialAmount : (remaining > 0 ? remaining : 0);
+
+	    const id = Date.now();
+	    activePayments.push(id);
+
+	    const div = document.createElement('div');
+	    div.className = 'payment-row';
+	    div.id = `row-${id}`;
+	    div.innerHTML = `
+	        <select class="form-control" onchange="updateCalculations()" id="method-${id}">
+	            ${paymentMethods.map(m => `<option value="${m.id}" data-surcharge="${m.surcharge_percent}">${m.name} ${m.surcharge_percent > 0 ? '(+' + m.surcharge_percent + '%)' : ''}</option>`).join('')}
+	        </select>
+	        <input type="number" step="0.01" class="form-control" value="${defaultAmount.toFixed(2)}" oninput="updateCalculations()" id="amount-${id}">
+	        <button onclick="removePaymentRow(${id})" class="btn" style="color: var(--danger); padding: 0.5rem;"><i class="fa-solid fa-times"></i></button>
+	    `;
+
+	    document.getElementById('payment-methods-list').appendChild(div);
+	    updateCalculations();
+	}
+
+	function removePaymentRow(id) {
+	    if (activePayments.length <= 1) return alert('Debe haber al menos un método de pago');
+	    activePayments = activePayments.filter(pid => pid !== id);
+	    document.getElementById(`row-${id}`).remove();
+	    updateCalculations();
+	}
+
+	function calculateRemaining() {
+	    const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+	    // Sum base amounts (ignoring surcharge for validation against debt)
+	    let totalCovered = 0;
+	    activePayments.forEach(id => {
+	        const amountInput = document.getElementById(`amount-${id}`);
+	        if (amountInput) {
+	            totalCovered += parseFloat(amountInput.value) || 0;
+	        }
+	    });
+
+	    return cartTotal - totalCovered;
+	}
+
+	function updateCalculations() {
+	    const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+	    let totalCovered = 0;
+
+	    activePayments.forEach(id => {
+	        const amountVal = parseFloat(document.getElementById(`amount-${id}`).value) || 0;
+	        totalCovered += amountVal;
+
+	        // Optional: visual feedback per row if we wanted to show surcharge amount separately
+	    });
+
+	    const remaining = cartTotal - totalCovered;
+	    const remainingEl = document.getElementById('remaining-amount');
+	    remainingEl.textContent = '$' + remaining.toFixed(2);
+
+	    const paidEl = document.getElementById('paid-amount');
+	    paidEl.textContent = '$' + totalCovered.toFixed(2);
+
+	    if (remaining > 0.01) {
+	        remainingEl.style.color = 'var(--danger)';
+	    } else if (remaining < -0.01) {
+	        remainingEl.style.color = 'var(--warning)'; // Overpaid
+	        remainingEl.textContent = 'Vuelto: $' + Math.abs(remaining).toFixed(2);
+	    } else {
+	        remainingEl.style.color = 'var(--success)';
+	    }
+	}
+
+	async function processSale() {
+	    const remaining = calculateRemaining();
+	    if (remaining > 0.01) return alert('Falta cubrir el total de la venta');
+
+	    // Prepare Payment Data
+	    const payments = activePayments.map(id => {
+	        const select = document.getElementById(`method-${id}`);
+	        const amountInput = document.getElementById(`amount-${id}`);
+	        const methodId = select.value;
+	        const amount = parseFloat(amountInput.value);
+	        // Surcharge is calculated on server, but we can send metadata if needed
+	        // Server needs: method_id, amount (base debt covered)
+	        return { methodId, amount };
+	    });
+
+	    try {
+	        const response = await fetch('/pos/checkout', {
+	            method: 'POST',
+	            headers: { 'Content-Type': 'application/json' },
+	            body: JSON.stringify({ cart, payments })
+	        });
+
+	        const result = await response.json();
+
+	        if (result.success) {
+	            window.open('/pos/ticket/' + result.saleId, '_blank', 'width=400,height=600');
+	            window.location.reload();
+	        } else {
+	            alert('Error: ' + result.error);
+	        }
+	    } catch (err) {
+	        console.error(err);
+	        alert('Error al procesar la venta');
+	    }
+	}
+</script>
+
+<%- include('../partials/footer') %>

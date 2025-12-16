@@ -1,0 +1,124 @@
+<%- include('../partials/header') %>
+
+<div
+	style="
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
+	"
+>
+	<h1 style="font-size: 2rem; font-weight: 700">Gestión de Usuarios</h1>
+	<a href="/admin" class="btn" style="background: var(--bg-accent)"
+		><i class="fa-solid fa-arrow-left"></i> Volver</a
+	>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem">
+	<!-- Add User Form -->
+	<div class="glass-card">
+		<h3 style="margin-bottom: 1.5rem">Nuevo Usuario</h3>
+		<form action="/admin/users" method="POST">
+			<div class="form-group">
+				<label class="form-label">Username</label>
+				<input type="text" name="username" class="form-control" required />
+			</div>
+			<div class="form-group">
+				<label class="form-label">Contraseña</label>
+				<input type="password" name="password" class="form-control" required />
+			</div>
+			<div class="form-group">
+				<label class="form-label">Rol</label>
+				<select
+					name="role"
+					class="form-control"
+					required
+					style="
+						background-color: var(--bg-secondary);
+						color: var(--text-primary);
+					"
+				>
+					<option value="employee">Empleado (Caja)</option>
+					<option value="warehouse">Almacén</option>
+					<option value="admin">Administrador</option>
+				</select>
+			</div>
+			<button type="submit" class="btn btn-primary" style="width: 100%">
+				Crear Usuario
+			</button>
+		</form>
+	</div>
+
+	<!-- User List -->
+	<div class="glass-card">
+		<h3 style="margin-bottom: 1.5rem">Personal</h3>
+		<table style="width: 100%; border-collapse: collapse">
+			<thead>
+				<tr
+					style="text-align: left; border-bottom: 1px solid var(--border-color)"
+				>
+					<th style="padding: 1rem">Usuario</th>
+					<th style="padding: 1rem">Rol</th>
+					<th style="padding: 1rem">Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% if (users && users.length > 0) { %> <% users.forEach(u => { %>
+				<tr style="border-bottom: 1px solid var(--glass-border)">
+					<td style="padding: 1rem; font-weight: 500"><%= u.username %></td>
+					<td style="padding: 1rem">
+						<span
+							style="
+								text-transform: capitalize;
+								padding: 0.25rem 0.5rem;
+								background: var(--bg-accent);
+								border-radius: 4px;
+								font-size: 0.875rem;
+							"
+						>
+							<%= u.role %>
+						</span>
+					</td>
+					<td style="padding: 1rem">
+						<% if (u.username !== user.username) { %>
+						<form
+							action="/admin/users/delete/<%= u.id %>"
+							method="POST"
+							style="display: inline"
+							onsubmit="return confirm('¿Eliminar usuario?');"
+						>
+							<button
+								type="submit"
+								class="btn"
+								style="padding: 0.5rem; background: none; color: var(--danger)"
+							>
+								<i class="fa-solid fa-trash"></i>
+							</button>
+						</form>
+						<% } else { %>
+						<span style="color: var(--text-secondary); font-size: 0.875rem"
+							>(Tú)</span
+						>
+						<% } %>
+					</td>
+				</tr>
+				<% }) %> <% } else { %>
+				<tr>
+					<td
+						colspan="3"
+						style="
+							padding: 1rem;
+							text-align: center;
+							color: var(--text-secondary);
+						"
+					>
+						No hay usuarios registrados.
+					</td>
+				</tr>
+				<% } %>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<%- include('../partials/footer') %>
