@@ -1,0 +1,104 @@
+<%- include('../partials/header') %>
+
+<div style="margin-bottom: 2rem">
+	<h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem">
+		Panel de Almacén
+	</h1>
+	<p style="color: var(--text-secondary)">Gestión de stock y etiquetado.</p>
+</div>
+
+<!-- Alerts Section -->
+<% if (alerts.length > 0) { %>
+<div
+	class="glass-card"
+	style="
+		border: 1px solid var(--danger);
+		background: rgba(239, 68, 68, 0.05);
+		margin-bottom: 2rem;
+	"
+>
+	<h3 style="color: var(--danger); margin-bottom: 1rem">
+		<i class="fa-solid fa-triangle-exclamation"></i> Alerta: Stock Bajo
+	</h3>
+	<div
+		style="
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			gap: 1rem;
+		"
+	>
+		<% alerts.forEach(p => { %>
+		<div
+			style="
+				background: rgba(0, 0, 0, 0.2);
+				padding: 1rem;
+				border-radius: 0.5rem;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			"
+		>
+			<div>
+				<div style="font-weight: 600"><%= p.name %></div>
+				<div style="font-size: 0.8rem; color: var(--text-secondary)">
+					SKU: <%= p.sku %>
+				</div>
+			</div>
+			<div style="text-align: right">
+				<span style="font-size: 1.25rem; font-weight: 700; color: var(--danger)"
+					><%= p.stock %></span
+				>
+				<div style="font-size: 0.7rem; color: var(--text-secondary)">
+					Min: <%= p.min_stock %>
+				</div>
+			</div>
+		</div>
+		<% }) %>
+	</div>
+	<div style="margin-top: 1rem; text-align: right">
+		<a href="/warehouse/inventory" class="btn btn-primary">Ir a Reponer</a>
+	</div>
+</div>
+<% } else { %>
+<div
+	class="glass-card"
+	style="margin-bottom: 2rem; text-align: center; color: var(--success)"
+>
+	<i
+		class="fa-solid fa-check-circle"
+		style="font-size: 2rem; margin-bottom: 0.5rem"
+	></i>
+	<p>Todo el inventario está en niveles óptimos.</p>
+</div>
+<% } %>
+
+<!-- Quick Actions -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem">
+	<a
+		href="/warehouse/inventory"
+		class="glass-card"
+		style="display: block; transition: transform 0.2s"
+	>
+		<h3 style="margin-bottom: 1rem">
+			<i class="fa-solid fa-boxes-stacked"></i> Gestión de Inventario
+		</h3>
+		<p style="color: var(--text-secondary)">
+			Consultar stock, agregar productos y reabastecer.
+		</p>
+	</a>
+
+	<a
+		href="/warehouse/labels"
+		class="glass-card"
+		style="display: block; transition: transform 0.2s"
+	>
+		<h3 style="margin-bottom: 1rem">
+			<i class="fa-solid fa-qrcode"></i> Imprimir Etiquetas
+		</h3>
+		<p style="color: var(--text-secondary)">
+			Generar códigos de barra y QR para productos.
+		</p>
+	</a>
+</div>
+
+<%- include('../partials/footer') %>

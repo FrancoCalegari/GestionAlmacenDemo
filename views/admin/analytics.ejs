@@ -8,10 +8,182 @@
 		margin-bottom: 2rem;
 	"
 >
-	<h1 style="font-size: 2rem; font-weight: 700">Analítica</h1>
+	<h1 style="font-size: 2rem; font-weight: 700">Analítica de Rendimiento</h1>
 	<a href="/admin" class="btn" style="background: var(--bg-accent)"
 		><i class="fa-solid fa-arrow-left"></i> Volver</a
 	>
+</div>
+
+<!-- Performance Cards -->
+<div
+	style="
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1.5rem;
+		margin-bottom: 2rem;
+	"
+>
+	<!-- Week -->
+	<div class="glass-card" style="border-top: 4px solid var(--accent-color)">
+		<h3
+			style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem"
+		>
+			<i class="fa-solid fa-calendar-week"></i> Esta Semana
+		</h3>
+		<div
+			style="
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+			"
+		>
+			<span>Ingresos</span>
+			<span style="font-weight: 700; color: var(--success)"
+				>$<%= metrics.week.revenue.toFixed(2) %></span
+			>
+		</div>
+		<div
+			style="
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+			"
+		>
+			<span>Ventas</span>
+			<span style="font-weight: 600"><%= metrics.week.orders %></span>
+		</div>
+		<div
+			style="
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+			"
+		>
+			<span>Productos</span>
+			<span style="font-weight: 600"><%= metrics.week.items %></span>
+		</div>
+		<div
+			style="
+				margin-top: 1rem;
+				padding-top: 0.5rem;
+				border-top: 1px solid var(--border-color);
+				font-size: 0.85rem;
+				color: var(--text-secondary);
+				text-align: right;
+			"
+		>
+			Ticket Prom: $<%= metrics.week.orders > 0 ? (metrics.week.revenue /
+			metrics.week.orders).toFixed(2) : '0.00' %>
+		</div>
+	</div>
+
+	<!-- Month -->
+	<div class="glass-card" style="border-top: 4px solid var(--warning)">
+		<h3
+			style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem"
+		>
+			<i class="fa-solid fa-calendar-days"></i> Este Mes
+		</h3>
+		<div
+			style="
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+			"
+		>
+			<span>Ingresos</span>
+			<span style="font-weight: 700; color: var(--success)"
+				>$<%= metrics.month.revenue.toFixed(2) %></span
+			>
+		</div>
+		<div
+			style="
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+			"
+		>
+			<span>Ventas</span>
+			<span style="font-weight: 600"><%= metrics.month.orders %></span>
+		</div>
+		<div
+			style="
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+			"
+		>
+			<span>Productos</span>
+			<span style="font-weight: 600"><%= metrics.month.items %></span>
+		</div>
+		<div
+			style="
+				margin-top: 1rem;
+				padding-top: 0.5rem;
+				border-top: 1px solid var(--border-color);
+				font-size: 0.85rem;
+				color: var(--text-secondary);
+				text-align: right;
+			"
+		>
+			Ticket Prom: $<%= metrics.month.orders > 0 ? (metrics.month.revenue /
+			metrics.month.orders).toFixed(2) : '0.00' %>
+		</div>
+	</div>
+
+	<!-- Year -->
+	<div class="glass-card" style="border-top: 4px solid var(--success)">
+		<h3
+			style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem"
+		>
+			<i class="fa-solid fa-calendar"></i> Este Año
+		</h3>
+		<div
+			style="
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+			"
+		>
+			<span>Ingresos</span>
+			<span style="font-weight: 700; color: var(--success)"
+				>$<%= metrics.year.revenue.toFixed(2) %></span
+			>
+		</div>
+		<div
+			style="
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+			"
+		>
+			<span>Ventas</span>
+			<span style="font-weight: 600"><%= metrics.year.orders %></span>
+		</div>
+		<div
+			style="
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.5rem;
+			"
+		>
+			<span>Productos</span>
+			<span style="font-weight: 600"><%= metrics.year.items %></span>
+		</div>
+		<div
+			style="
+				margin-top: 1rem;
+				padding-top: 0.5rem;
+				border-top: 1px solid var(--border-color);
+				font-size: 0.85rem;
+				color: var(--text-secondary);
+				text-align: right;
+			"
+		>
+			Ticket Prom: $<%= metrics.year.orders > 0 ? (metrics.year.revenue /
+			metrics.year.orders).toFixed(2) : '0.00' %>
+		</div>
+	</div>
 </div>
 
 <div
@@ -23,16 +195,19 @@
 >
 	<!-- Top Products Today -->
 	<div class="glass-card">
-		<h3 style="margin-bottom: 1.5rem; color: var(--warning)">
-			<i class="fa-solid fa-star"></i> Top Productos (Hoy)
+		<h3 style="margin-bottom: 1.5rem; color: var(--text-primary)">
+			<i class="fa-solid fa-star" style="color: var(--warning)"></i> Top
+			Productos (Hoy)
 		</h3>
 		<table style="width: 100%; border-collapse: collapse">
 			<thead>
 				<tr
 					style="text-align: left; border-bottom: 1px solid var(--border-color)"
 				>
-					<th style="padding: 0.5rem">Producto</th>
-					<th style="padding: 0.5rem; text-align: right">Vendidos</th>
+					<th style="padding: 0.5rem; font-size: 0.9rem">Producto</th>
+					<th style="padding: 0.5rem; text-align: right; font-size: 0.9rem">
+						Vendidos
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -63,22 +238,25 @@
 		</table>
 	</div>
 
-	<!-- Top Products All Time (Limit 10) -->
+	<!-- Top Products Year -->
 	<div class="glass-card">
-		<h3 style="margin-bottom: 1.5rem; color: var(--accent-color)">
-			<i class="fa-solid fa-trophy"></i> Más Vendidos (Histórico)
+		<h3 style="margin-bottom: 1.5rem; color: var(--text-primary)">
+			<i class="fa-solid fa-trophy" style="color: var(--accent-color)"></i> Más
+			Vendidos (Año)
 		</h3>
 		<table style="width: 100%; border-collapse: collapse">
 			<thead>
 				<tr
 					style="text-align: left; border-bottom: 1px solid var(--border-color)"
 				>
-					<th style="padding: 0.5rem">Producto</th>
-					<th style="padding: 0.5rem; text-align: right">Vendidos</th>
+					<th style="padding: 0.5rem; font-size: 0.9rem">Producto</th>
+					<th style="padding: 0.5rem; text-align: right; font-size: 0.9rem">
+						Vendidos
+					</th>
 				</tr>
 			</thead>
 			<tbody>
-				<% if (topAllTime.length > 0) { %> <% topAllTime.forEach(p => { %>
+				<% if (topYear.length > 0) { %> <% topYear.forEach(p => { %>
 				<tr style="border-bottom: 1px solid var(--glass-border)">
 					<td style="padding: 0.75rem 0.5rem"><%= p.name %></td>
 					<td

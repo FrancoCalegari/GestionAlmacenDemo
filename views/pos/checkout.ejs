@@ -312,9 +312,9 @@
 	                    <div style="font-size: 0.8rem; color: var(--text-secondary);">$${item.price} x ${item.quantity}</div>
 	                </div>
 	                <div style="display: flex; align-items: center; gap: 0.5rem;">
-	                    <button onclick="updateQuantity('${item.id}', -1)" style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">-</button>
+	                    <button onclick="updateQuantity('${item.id}', -1)" style="background: var(--text-secondary); border: 1px solid var(--border-color); color: var(--text-primary); width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">-</button>
 	                    <span>${item.quantity}</span>
-	                    <button onclick="updateQuantity('${item.id}', 1)" style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">+</button>
+	                    <button onclick="updateQuantity('${item.id}', 1)" style="background: var(--text-secondary); border: 1px solid var(--border-color); color: var(--text-primary); width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">+</button>
 	                </div>
 	            </div>
 	        `;

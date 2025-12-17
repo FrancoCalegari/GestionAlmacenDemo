@@ -16,7 +16,7 @@
 
 <div class="glass-card">
 	<div style="overflow-x: auto">
-		<table style="width: 100%; border-collapse: collapse; min-width: 800px">
+		<table style="width: 100%; border-collapse: collapse">
 			<thead>
 				<tr
 					style="text-align: left; border-bottom: 1px solid var(--border-color)"
@@ -32,23 +32,32 @@
 			<tbody>
 				<% if (sales && sales.length > 0) { %> <% sales.forEach(sale => { %>
 				<tr style="border-bottom: 1px solid var(--glass-border)">
-					<td style="padding: 1rem; color: var(--text-secondary)">
+					<td
+						data-label="Fecha"
+						style="padding: 1rem; color: var(--text-secondary)"
+					>
 						<%= new Date(sale.created_at).toLocaleString() %>
 					</td>
-					<td style="padding: 1rem; font-family: monospace">
+					<td
+						data-label="Ticket ID"
+						style="padding: 1rem; font-family: monospace"
+					>
 						<%= sale.id.split('-')[0] %>
 					</td>
-					<td style="padding: 1rem">
+					<td data-label="Cajero" style="padding: 1rem">
 						<%= sale.users ? sale.users.username : 'N/A' %>
 					</td>
-					<td style="padding: 1rem">
+					<td data-label="Items" style="padding: 1rem">
 						<%= sale.sale_items ? sale.sale_items.length : 0 %>
 					</td>
-					<td style="padding: 1rem; font-weight: 600; color: var(--success)">
+					<td
+						data-label="Total"
+						style="padding: 1rem; font-weight: 600; color: var(--success)"
+					>
 						$<%= (parseFloat(sale.total_base || sale.total) +
 						parseFloat(sale.total_surcharge || 0)).toFixed(2) %>
 					</td>
-					<td style="padding: 1rem">
+					<td data-label="Acciones" style="padding: 1rem">
 						<a
 							href="/pos/ticket/<%= sale.id %>"
 							target="_blank"
@@ -58,6 +67,7 @@
 								background: var(--bg-primary);
 								border: 1px solid var(--border-color);
 								font-size: 0.875rem;
+								width: 100%;
 							"
 						>
 							<i class="fa-solid fa-print"></i> Ticket

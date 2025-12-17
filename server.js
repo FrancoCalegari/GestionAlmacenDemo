@@ -65,9 +65,11 @@ app.use("/pos", requireRole("employee"), require("./routes/pos"));
 // app.get('/pos', requireRole('employee'), (req, res) => {
 //     res.send('POS System (Coming Soon)');
 // });
-app.get("/warehouse", requireRole("warehouse"), (req, res) => {
-	res.send("Warehouse Management (Coming Soon)");
-});
+app.use("/warehouse", requireRole("warehouse"), require("./routes/warehouse"));
+
+// app.get("/warehouse", requireRole("warehouse"), (req, res) => {
+// 	res.send("Warehouse Management (Coming Soon)");
+// });
 
 const bcrypt = require("bcryptjs"); // Make sure to require bcrypt
 
